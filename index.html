@@ -9,18 +9,13 @@
 <meta name="theme-color" content="#0f172a"/>
 <title>HA Reminders</title>
 <style>
-:root{
-  --bg:#0f172a;--sf:#1e293b;--sf2:#334155;--sf3:#475569;
-  --ac:#3b82f6;--acd:#1d4ed8;
-  --red:#ef4444;--grn:#22c55e;--amb:#f59e0b;
-  --tx:#f1f5f9;--mu:#94a3b8;--bd:#334155;
-}
+:root{--bg:#0f172a;--sf:#1e293b;--sf2:#334155;--sf3:#475569;--ac:#3b82f6;--acd:#1d4ed8;--red:#ef4444;--grn:#22c55e;--amb:#f59e0b;--tx:#f1f5f9;--mu:#94a3b8;--bd:#334155;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;}
 body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;min-height:600px;}
 #hdr{background:var(--sf);border-bottom:1px solid var(--bd);padding:max(16px,env(safe-area-inset-top)) 20px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;}
 #hdr h1{font-size:17px;font-weight:600;flex:1;letter-spacing:-.01em;}
-.hbtn{background:none;border:none;color:var(--mu);cursor:pointer;padding:5px;border-radius:6px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.hbtn{background:none;border:none;color:var(--mu);cursor:pointer;padding:5px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
 .hbtn:hover{color:var(--tx);background:var(--sf2);}
 #view{flex:1;overflow-y:auto;padding:16px;padding-bottom:calc(70px + env(safe-area-inset-bottom));}
 #nav{background:var(--sf);border-top:1px solid var(--bd);display:flex;position:sticky;bottom:0;padding-bottom:env(safe-area-inset-bottom);}
@@ -44,7 +39,7 @@ textarea{resize:vertical;min-height:88px;}
 .counter.warn{color:var(--amb);}
 .counter.over{color:var(--red);}
 input[type=datetime-local]::-webkit-calendar-picker-indicator{filter:invert(.55) hue-rotate(180deg) brightness(1.2);}
-.btn{width:100%;padding:13px;border-radius:10px;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;letter-spacing:-.01em;}
+.btn{width:100%;padding:13px;border-radius:10px;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
 .btn-p{background:var(--ac);color:#fff;}
 .btn-p:hover:not(:disabled){background:var(--acd);}
 .btn-p:disabled{opacity:.4;cursor:default;}
@@ -64,7 +59,6 @@ input[type=datetime-local]::-webkit-calendar-picker-indicator{filter:invert(.55)
 </style>
 </head>
 <body>
-<h2 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;">Home Assistant Reminders App</h2>
 <div id="hdr">
   <h1 id="htitle">&#9200; Reminders</h1>
   <button class="hbtn" id="rbtn" onclick="loadList()" title="Refresh" style="display:none">
@@ -76,9 +70,9 @@ input[type=datetime-local]::-webkit-calendar-picker-indicator{filter:invert(.55)
 </div>
 <div id="view"></div>
 <div id="toast" role="status" aria-live="polite"></div>
-<nav id="nav" aria-label="Main navigation">
+<nav id="nav">
   <button class="tab on" id="tab-list" onclick="go('list')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <rect x="3" y="4" width="18" height="18" rx="2"/>
       <line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>
       <line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/>
@@ -86,7 +80,7 @@ input[type=datetime-local]::-webkit-calendar-picker-indicator{filter:invert(.55)
     Reminders
   </button>
   <button class="tab" id="tab-new" onclick="go('new')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="12" cy="12" r="10"/>
       <line x1="12" y1="8" x2="12" y2="16"/>
       <line x1="8" y1="12" x2="16" y2="12"/>
@@ -94,7 +88,7 @@ input[type=datetime-local]::-webkit-calendar-picker-indicator{filter:invert(.55)
     New
   </button>
   <button class="tab" id="tab-settings" onclick="go('settings')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
     </svg>
@@ -111,7 +105,8 @@ const TARGETS={
 let view='list', _items=[], haUrl='', haTok='';
 try{haUrl=localStorage.getItem('har_url')||'';haTok=localStorage.getItem('har_tok')||'';}catch(_){}
 
-async function api(path,body){
+// REST API for writes (no response needed)
+async function apiPost(path,body){
   if(!haUrl||!haTok)throw new Error('Not connected — configure Settings first.');
   const r=await fetch(haUrl.replace(/\/$/,'')+path,{
     method:'POST',
@@ -122,15 +117,60 @@ async function api(path,body){
   return r.json();
 }
 
-async function getItems(){
-  const d=await api('/api/services/todo/get_items?return_response=true',{entity_id:TODO,status:'needs_action'});
-  return d&&d[TODO]&&d[TODO].items?d[TODO].items:[];
+// WebSocket for get_items (needs return_response)
+function wsUrl(){
+  return haUrl.replace(/^https/,'wss').replace(/^http/,'ws').replace(/\/$/,'')+'/api/websocket';
 }
+
+async function getItems(){
+  return new Promise(function(resolve,reject){
+    if(!haUrl||!haTok){reject(new Error('Not connected — configure Settings first.'));return;}
+    var ws, done=false, tid=setTimeout(function(){
+      done=true; try{ws&&ws.close();}catch(_){}
+      reject(new Error('Connection timed out'));
+    },10000);
+
+    try{ ws=new WebSocket(wsUrl()); }
+    catch(e){ clearTimeout(tid); reject(new Error('Invalid URL')); return; }
+
+    ws.onmessage=function(ev){
+      if(done)return;
+      var msg;
+      try{msg=JSON.parse(ev.data);}catch(_){return;}
+      if(msg.type==='auth_required'){
+        ws.send(JSON.stringify({type:'auth',access_token:haTok}));
+      } else if(msg.type==='auth_ok'){
+        ws.send(JSON.stringify({id:1,type:'call_service',domain:'todo',service:'get_items',
+          service_data:{status:'needs_action'},target:{entity_id:TODO},return_response:true}));
+      } else if(msg.type==='auth_invalid'){
+        done=true; clearTimeout(tid); ws.close();
+        reject(new Error('Invalid token'));
+      } else if(msg.type==='result'&&msg.id===1){
+        done=true; clearTimeout(tid); ws.close();
+        if(msg.success){
+          resolve((msg.result&&msg.result.response&&msg.result.response[TODO]&&msg.result.response[TODO].items)||[]);
+        } else {
+          reject(new Error((msg.error&&msg.error.message)||'Failed to get items'));
+        }
+      }
+    };
+    ws.onerror=function(){
+      if(done)return; done=true; clearTimeout(tid);
+      reject(new Error('WebSocket failed — check HA URL'));
+    };
+    ws.onclose=function(e){
+      if(done)return; done=true; clearTimeout(tid);
+      if(!e.wasClean)reject(new Error('Connection closed unexpectedly'));
+    };
+  });
+}
+
 async function addItem(msg,dtLocal,tgt){
-  await api('/api/services/todo/add_item',{entity_id:TODO,item:msg,due_datetime:new Date(dtLocal).toISOString(),description:tgt});
+  await apiPost('/api/services/todo/add_item',
+    {entity_id:TODO,item:msg,due_datetime:new Date(dtLocal).toISOString(),description:tgt});
 }
 async function removeItem(uid){
-  await api('/api/services/todo/remove_item',{entity_id:TODO,item:uid});
+  await apiPost('/api/services/todo/remove_item',{entity_id:TODO,item:uid});
 }
 
 const esc=s=>{const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;};
@@ -156,7 +196,6 @@ function toast(msg,ok){
   if(ok===undefined)ok=true;
   const el=document.getElementById('toast');
   el.textContent=msg;el.className=ok?'ok':'bad';
-  el.style.display='block';
   void el.offsetWidth;el.classList.add('show');
   clearTimeout(_tt);_tt=setTimeout(function(){el.classList.remove('show');},2800);
 }
@@ -166,7 +205,7 @@ const TITLES={list:'&#9200; Reminders',new:'&#10133; New Reminder',settings:'&#9
 function go(v){
   view=v;
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
-  var el=document.getElementById('tab-'+v);
+  const el=document.getElementById('tab-'+v);
   if(el)el.classList.add('on');
   document.getElementById('htitle').innerHTML=TITLES[v]||'';
   document.getElementById('rbtn').style.display=v==='list'?'':'none';
@@ -182,7 +221,7 @@ function render(){
 async function renderList(){
   const v=document.getElementById('view');
   if(!haUrl||!haTok){
-    v.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><p>Not connected</p><small>Open <strong>Settings</strong> to connect to Home Assistant.</small></div>';
+    v.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><p>Not connected</p><small>Open <strong>Settings</strong> to connect.</small></div>';
     return;
   }
   v.innerHTML='<div class="loader">Loading...</div>';
@@ -199,15 +238,15 @@ async function renderList(){
       const tgt=TARGETS[r.description]||TARGETS.michael;
       return '<div class="card"><div class="r-time '+(late?'late':'')+'">'+
         (late?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>':'&#128336;')+
-        esc(fmtDt(due))+(late?' - Overdue':'')+
+        esc(fmtDt(due))+(late?' — Overdue':'')+
         '</div><div class="r-msg">'+esc(r.summary||'')+'</div>'+
         '<div class="r-foot"><span class="badge">To: '+tgt.label+'</span>'+
-        '<button class="del" onclick="handleDel('+i+')" aria-label="Delete reminder">'+
+        '<button class="del" onclick="handleDel('+i+')" aria-label="Delete">'+
         '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>'+
         '</button></div></div>';
     }).join('');
   }catch(e){
-    v.innerHTML='<div class="err">Warning: '+esc(e.message)+'</div>';
+    v.innerHTML='<div class="err">&#9888; '+esc(e.message)+'</div>';
   }
 }
 
@@ -215,7 +254,7 @@ function renderNew(){
   document.getElementById('view').innerHTML=
     '<div class="fg"><label for="fi-msg">Message (max '+MAX+' chars)</label>'+
     '<textarea id="fi-msg" placeholder="Remind me to..." oninput="updCnt()"></textarea>'+
-    '<div class="counter" id="fi-cnt" aria-live="polite">0 / '+MAX+'</div></div>'+
+    '<div class="counter" id="fi-cnt">0 / '+MAX+'</div></div>'+
     '<div class="fg"><label for="fi-dt">Date and Time</label>'+
     '<input type="datetime-local" id="fi-dt" value="'+dfltDt()+'" /></div>'+
     '<div class="fg"><label for="fi-tgt">Send To</label><select id="fi-tgt">'+
@@ -238,13 +277,13 @@ function renderSettings(){
     '<div class="inf">Enter your HA URL and a <strong>Long-Lived Access Token</strong>.<br>'+
     'Profile &rarr; Security &rarr; Long-Lived Access Tokens &rarr; Create token.</div>'+
     '<div class="fg"><label for="si-url">Home Assistant URL</label>'+
-    '<input type="url" id="si-url" placeholder="https://homeassistant.local:8123" value="'+esc(haUrl)+'" autocapitalize="none" autocorrect="off"/></div>'+
+    '<input type="url" id="si-url" placeholder="https://xxxx.ui.nabu.casa" value="'+esc(haUrl)+'" autocapitalize="none" autocorrect="off"/></div>'+
     '<div class="fg"><label for="si-tok">Access Token</label>'+
     '<input type="password" id="si-tok" placeholder="eyJ..." value="'+esc(haTok)+'" autocomplete="off" autocorrect="off"/></div>'+
     '<button class="btn btn-p" onclick="handleSave()">Save Settings</button>'+
     '<div class="inf" style="margin-top:18px"><strong>Required in Home Assistant</strong><br>'+
-    'Local To-do list with entity ID <code>todo.reminders</code><br>'+
-    'Delivery automation (see setup instructions)<br>'+
+    'Local To-do list: <code>todo.reminders</code><br>'+
+    'Delivery automation (see setup)<br>'+
     'Requires HA 2023.11+</div>';
 }
 
@@ -288,7 +327,7 @@ function handleSave(){
 
 async function loadList(){if(view==='list')await renderList();}
 
-const mf={name:'HA Reminders',short_name:'Reminders',description:'Schedule Home Assistant notification reminders',start_url:'.',display:'standalone',background_color:'#0f172a',theme_color:'#0f172a',icons:[{src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#1e293b"/><text y="78" x="10" font-size="74">&#9200;</text></svg>'),sizes:'any',type:'image/svg+xml',purpose:'any'}]};
+const mf={name:'HA Reminders',short_name:'Reminders',start_url:'.',display:'standalone',background_color:'#0f172a',theme_color:'#0f172a',icons:[{src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#1e293b"/><text y="78" x="10" font-size="74">&#9200;</text></svg>'),sizes:'any',type:'image/svg+xml',purpose:'any'}]};
 const ml=document.createElement('link');ml.rel='manifest';
 ml.href='data:application/manifest+json,'+encodeURIComponent(JSON.stringify(mf));
 document.head.appendChild(ml);
