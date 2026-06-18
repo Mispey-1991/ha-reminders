@@ -1,5 +1,5 @@
 {
-  "name": "HA Reminders",
+  "name": "Impordant Reminders",
   "short_name": "Reminders",
   "description": "Schedule Home Assistant notification reminders",
   "start_url": "./",
