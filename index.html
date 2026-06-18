@@ -16,6 +16,16 @@
   --tx:#1e293b;--tx2:#64748b;--bd:rgba(0,0,0,.08);
   --r:14px;--r-sm:10px;
 }
+html[data-theme=dark]{--bg:#0f172a;--sf:#1e293b;--sf2:#0f172a;--sf3:#334155;--tx:#f1f5f9;--tx2:#94a3b8;--bd:rgba(255,255,255,.08);--red:#f87171;--grn:#4ade80;--amb:#fbbf24;}
+html[data-theme=dark] .badge-michael{background:rgba(251,146,60,.15);color:#fdba74;border-color:rgba(251,146,60,.3);}
+html[data-theme=dark] .badge-krista{background:rgba(96,165,250,.15);color:#93c5fd;border-color:rgba(96,165,250,.3);}
+html[data-theme=dark] .badge-both{background:rgba(74,222,128,.15);color:#86efac;border-color:rgba(74,222,128,.3);}
+html[data-theme=dark] .badge-from{background:rgba(255,255,255,.05);color:var(--tx2);border-color:var(--sf3);}
+html[data-theme=dark] .badge-gib{background:rgba(167,139,250,.15);color:#c4b5fd;border-color:rgba(167,139,250,.3);}
+html[data-theme=dark] .card.sent{border-color:rgba(167,139,250,.3);background:rgba(124,58,237,.07);}
+html[data-theme=dark] .toggle-pill{background:#374151;}
+html[data-theme=dark] input[type=datetime-local]::-webkit-calendar-picker-indicator,html[data-theme=dark] input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1) opacity(.4);}
+html[data-theme=dark] .r-time.sent-time{color:#a78bfa;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;}
 body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;min-height:100vh;}
@@ -117,6 +127,7 @@ input:checked ~ .toggle-pill::before{transform:translateX(18px);}
 #toast.bad{background:var(--red);}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
 </style>
+<link rel="manifest" href="manifest.json"/>
 </head>
 <body>
 <div id="hdr">
@@ -177,13 +188,29 @@ const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const WEEKS=['1st','2nd','3rd','4th'];
 
 // ── STATE ───────────────────────────────────────────────────────
-let view='list',_items=[],haUrl='',haTok='',haUser='';
+let view='list',_items=[],haUrl='',haTok='',haUser='',haTheme='';
 let filterTarget='all',filterCreator='all';
 try{
   haUrl=localStorage.getItem('har_url')||'';
   haTok=localStorage.getItem('har_tok')||'';
   haUser=localStorage.getItem('har_user')||'';
+  haTheme=localStorage.getItem('har_theme')||'';
 }catch(_){}
+
+function applyTheme(t){
+  haTheme=t;
+  const sysDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const dark=t==='dark'||(t!=='light'&&sysDark);
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  try{localStorage.setItem('har_theme',t);}catch(_){}
+}
+if(window.matchMedia)window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(haTheme==='')applyTheme('');});
+
+function toggleTok(){
+  const el=document.getElementById('si-tok');
+  if(!el)return;
+  el.type=el.type==='password'?'text':'password';
+}
 
 // ── WEBSOCKET ───────────────────────────────────────────────────
 function wsUrl(){return haUrl.replace(/^https/,'wss').replace(/^http/,'ws').replace(/\/$/,'')+'/api/websocket';}
@@ -514,7 +541,11 @@ function renderSettings(){
     '<div class="fg"><label for="si-url">Home Assistant URL</label>'+
     '<input type="url" id="si-url" placeholder="https://xxxx.ui.nabu.casa" value="'+esc(haUrl)+'" autocapitalize="none" autocorrect="off"/></div>'+
     '<div class="fg"><label for="si-tok">Access Token</label>'+
-    '<input type="password" id="si-tok" placeholder="eyJ..." value="'+esc(haTok)+'" autocomplete="off"/></div>'+
+    '<div style="position:relative;">'+
+    '<input type="password" id="si-tok" placeholder="eyJ..." value="'+esc(haTok)+'" autocomplete="off" style="padding-right:46px;"/>'+
+    '<button onclick="toggleTok()" style="position:absolute;right:0;top:0;height:100%;padding:0 13px;background:none;border:none;color:var(--tx2);cursor:pointer;display:flex;align-items:center;" title="Show token">'+
+    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'+
+    '</button></div></div>'+
     '<div class="fg"><label for="si-me">I am</label>'+
     '<select id="si-me">'+
       '<option value="">Unknown</option>'+
@@ -522,6 +553,12 @@ function renderSettings(){
         return '<option value="'+e[0]+'"'+(haUser===e[0]?' selected':'')+'>'+e[1].label+'</option>';
       }).join('')+
     '</select></div>'+
+    '<div class="fg"><label>Appearance</label>'+
+    '<div class="pills">'+
+    ['','light','dark'].map(function(v,i){
+      return '<button class="pill'+(haTheme===v?' on':'')+'" onclick="applyTheme(\''+v+'\');renderSettings()">'+['Auto','Light','Dark'][i]+'</button>';
+    }).join('')+
+    '</div></div>'+
     '<button class="btn btn-p" id="si-btn" onclick="handleSave()">Save &amp; Connect</button>'+
     '<div class="inf" style="margin-top:18px"><strong>Required in Home Assistant</strong><br>'+
     'Local To-do list: <code>todo.reminders</code><br>'+
@@ -595,9 +632,9 @@ async function handleSave(){
 async function loadList(){if(view==='list')await renderList();}
 
 // ── MANIFEST ────────────────────────────────────────────────────
-const mf={name:'HA Reminders',short_name:'Reminders',start_url:'.',display:'standalone',background_color:'#f1f5f9',theme_color:'#f8fafc',icons:[{src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#eff6ff"/><text y="78" x="10" font-size="74">&#9200;</text></svg>'),sizes:'any',type:'image/svg+xml',purpose:'any'}]};
-const ml=document.createElement('link');ml.rel='manifest';ml.href='data:application/manifest+json,'+encodeURIComponent(JSON.stringify(mf));document.head.appendChild(ml);
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
+applyTheme(haTheme);
 go('list');
 </script>
 </body>
